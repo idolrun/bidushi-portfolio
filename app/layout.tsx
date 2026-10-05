@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { EB_Garamond, Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { PortfolioLoader } from "@/components/loader/PortfolioLoader";
+import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { cn } from "@/lib/utils";
 
 const ghosthey = localFont({
@@ -61,7 +63,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "font-sans",
       )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <PortfolioLoader />
+        <SmoothCursor />
+      </body>
     </html>
   );
 }
