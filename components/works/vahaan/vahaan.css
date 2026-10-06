@@ -1,0 +1,144 @@
+/*
+ * Frame width, as on Catchback. Both 1300×730 halves fill the frame and rest
+ * touching at (0, 0). Start offsets run along the diagonal cut's normal
+ * (0.4896, 0.8719), as a share of the piece: x = 0.48 × H × 0.4896 =
+ * 13.2% of W, y = 0.48 × 0.8719 = 41.85% of H, × 0.62 on compact. GSAP owns
+ * the transform; these only stop a flash before it runs.
+ */
+.vahaan-scene {
+  --vf: min(78vw, calc(54vh * 1300 / 730), 34rem);
+}
+
+.vahaan-top,
+.vahaan-bottom,
+.vahaan-logo,
+.vahaan-hero,
+.vahaan-phone {
+  will-change: transform;
+}
+
+.vahaan-top,
+.vahaan-bottom {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--vf);
+  aspect-ratio: 1300 / 730;
+  margin: calc(var(--vf) * 730 / 1300 / -2) 0 0 calc(var(--vf) / -2);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.vahaan-top {
+  transform: translate3d(-13.2%, -41.85%, 0);
+}
+
+.vahaan-bottom {
+  transform: translate3d(13.2%, 41.85%, 0);
+}
+
+.vahaan-piece {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+/* ~1.5px along the cut's normal so the antialiased seam fringe is covered. */
+.vahaan-piece-bottom {
+  transform: translate3d(-0.06%, -0.17%, 0);
+}
+
+.vahaan-logo {
+  transform-origin: 50% 50%;
+  transform: translate3d(0, -4vh, 0) scale(0.96);
+  opacity: 0;
+  visibility: hidden;
+  /* Faint lift off the dark ground. Not a neon glow. */
+  text-shadow: 0 0 1.4em rgb(255 255 255 / 0.12);
+}
+
+.vahaan-phone-left {
+  transform: translate3d(-28vw, 0, 0) scale(0.92);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.vahaan-phone-center {
+  transform: translate3d(0, 18vh, 0) scale(0.92);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.vahaan-phone-right {
+  transform: translate3d(28vw, 0, 0) scale(0.92);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.vahaan-caption {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (max-width: 1023px) {
+  .vahaan-top {
+    transform: translate3d(-8.18%, -25.95%, 0);
+  }
+
+  .vahaan-bottom {
+    transform: translate3d(8.18%, 25.95%, 0);
+  }
+
+  .vahaan-logo {
+    transform: translate3d(0, -2.48vh, 0) scale(0.96);
+  }
+
+  .vahaan-phone-left {
+    transform: translate3d(-17.36vw, 0, 0) scale(0.92);
+  }
+
+  .vahaan-phone-center {
+    transform: translate3d(0, 11.16vh, 0) scale(0.92);
+  }
+
+  .vahaan-phone-right {
+    transform: translate3d(17.36vw, 0, 0) scale(0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vahaan-stage {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .vahaan-scene {
+    position: relative !important;
+    inset: auto !important;
+    height: auto !important;
+  }
+
+  .vahaan-scene {
+    min-height: 100dvh;
+  }
+
+  .vahaan-top,
+  .vahaan-bottom,
+  .vahaan-phone,
+  .vahaan-caption {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .vahaan-top,
+  .vahaan-bottom,
+  .vahaan-phone {
+    transform: none !important;
+  }
+
+  /* The wordmark is gone once the halves touch. */
+  .vahaan-logo {
+    display: none;
+  }
+}

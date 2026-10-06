@@ -1,0 +1,8 @@
+services:
+  web:
+    # IMAGE_TAG is written to .env by deploy/deploy.sh
+    image: ghcr.io/idolrun/bidushi-portfolio:${IMAGE_TAG:?run ./deploy.sh <image-tag>}
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "127.0.0.1:${APP_PORT:-3000}:3000"

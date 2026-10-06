@@ -1,0 +1,164 @@
+/*
+ * Initial transforms use the `transform` property so they match GSAP and
+ * do not stack with Tailwind's individual translate/scale properties.
+ * Piece offsets are percentages of the frame (the half fills the frame) and
+ * match PIECE_X_RATIO / PIECE_Y_RATIO in worksAnimations.ts. Compact layouts
+ * use those ratios × 0.62.
+ */
+
+.works-top,
+.works-bottom,
+.works-frame,
+.works-logo,
+.works-lockup,
+.works-phone {
+  will-change: transform;
+}
+
+/* GSAP marks the spacer flex-shrink: 1. Keep the works pin distance.
+   The spacer paints over the pinned section and would swallow the menu. */
+.pin-spacer {
+  flex-shrink: 0 !important;
+  pointer-events: none;
+}
+
+.works-top {
+  transform: translate3d(-13.58%, -41.84%, 0);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.works-bottom {
+  transform: translate3d(13.58%, 41.84%, 0);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.works-logo {
+  transform-origin: 50% 50%;
+  transform: translate3d(0, 0, 0) scale(1);
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Left hidden. The halves fade in on the close; this overlay is not faded in. */
+.works-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: rgb(0 0 0 / 0.42);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/*
+ * Both files are 1300×750 with ~18px of empty alpha along the bottom,
+ * and the diagonal cut is a 1–2px fringe. Draw each half 4% large so the
+ * footer falls outside the clip. The lower half is nudged ~1.5px along the
+ * seam normal (0.06% left, 0.17% up) to cover the fringe. Any larger and the
+ * page content stops lining up across the cut.
+ */
+.works-piece-clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.works-piece {
+  position: absolute;
+  width: 104%;
+  height: 104%;
+  max-width: none;
+  object-fit: fill;
+}
+
+.works-piece-top {
+  top: 0;
+  left: 0;
+}
+
+.works-piece-bottom {
+  top: -0.17%;
+  left: -0.06%;
+}
+
+.works-phone-left {
+  transform: translate3d(-28vw, 0, 0) scale(0.92);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.works-phone-center {
+  transform: translate3d(0, 18vh, 0) scale(0.92);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.works-phone-right {
+  transform: translate3d(28vw, 0, 0) scale(0.92);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.works-caption {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (max-width: 1023px) {
+  .works-top {
+    transform: translate3d(-8.42%, -25.94%, 0);
+  }
+
+  .works-bottom {
+    transform: translate3d(8.42%, 25.94%, 0);
+  }
+
+  .works-phone-left {
+    transform: translate3d(-17.36vw, 0, 0) scale(0.92);
+  }
+
+  .works-phone-center {
+    transform: translate3d(0, 11.16vh, 0) scale(0.92);
+  }
+
+  .works-phone-right {
+    transform: translate3d(17.36vw, 0, 0) scale(0.92);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .works-stage {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .works-scene {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    height: auto !important;
+  }
+
+  .works-scene {
+    min-height: 100dvh;
+  }
+
+  .works-top,
+  .works-bottom,
+  .works-frame,
+  .works-logo,
+  .works-overlay,
+  .works-lockup,
+  .works-phone,
+  .works-caption {
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import {
   CLOCK_TIME_PLACEHOLDER,
@@ -87,7 +88,7 @@ function paintClock(node: HTMLElement, time: string) {
   }
 }
 
-export function PortfolioLoader() {
+function HomeLoader() {
   const rootRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
   const darkWrapRef = useRef<HTMLDivElement>(null);
@@ -241,12 +242,39 @@ export function PortfolioLoader() {
     void syncTime();
 
     let settled = false;
+    let released = false;
     const percentExitY = () => -(metrics.textH + 48);
     const placeFinal = () => {
       gsap.set(sheet, { y: 0 });
       gsap.set(wraps, { y: percentExitY(), autoAlpha: 0 });
       gsap.set(logo, { yPercent: 0, y: centerLogo() });
       gsap.set(clocks, { y: 0 });
+    };
+
+    const releaseScroll = () => {
+      if (released) return;
+      released = true;
+
+      html.style.overflow = previous.htmlOverflow;
+      html.style.overscrollBehavior = previous.overscroll;
+      body.style.overflow = previous.bodyOverflow;
+      body.style.paddingRight = previous.bodyPaddingRight;
+      inerted.forEach((node) => {
+        node.inert = false;
+      });
+      root.classList.remove("touch-none");
+
+      html.dataset.loaderSettled = "true";
+      window.dispatchEvent(new CustomEvent("portfolio-loader:settled"));
+    };
+
+    const settleReducedMotion = () => {
+      root.dataset.reducedMotion = "true";
+      html.dataset.loaderReduced = "true";
+      root.classList.remove("fixed");
+      root.style.position = "relative";
+      root.style.height = "100dvh";
+      releaseScroll();
     };
 
     const ctx = gsap.context(() => {
@@ -274,6 +302,12 @@ export function PortfolioLoader() {
         tracking = false;
         settled = true;
         placeFinal();
+        root.setAttribute("role", "region");
+        root.setAttribute("aria-label", "YKSH");
+        root.removeAttribute("aria-valuemin");
+        root.removeAttribute("aria-valuemax");
+        root.removeAttribute("aria-valuenow");
+        settleReducedMotion();
       });
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
@@ -338,6 +372,7 @@ export function PortfolioLoader() {
           root.removeAttribute("aria-valuemin");
           root.removeAttribute("aria-valuemax");
           root.removeAttribute("aria-valuenow");
+          releaseScroll();
         }, `reveal+=${REVEAL_DURATION}`);
       });
 
@@ -355,13 +390,15 @@ export function PortfolioLoader() {
     return () => {
       abort.abort();
       window.clearInterval(clockTimer);
-      html.style.overflow = previous.htmlOverflow;
-      html.style.overscrollBehavior = previous.overscroll;
-      body.style.overflow = previous.bodyOverflow;
-      body.style.paddingRight = previous.bodyPaddingRight;
-      inerted.forEach((node) => {
-        node.inert = false;
-      });
+      if (!released) {
+        html.style.overflow = previous.htmlOverflow;
+        html.style.overscrollBehavior = previous.overscroll;
+        body.style.overflow = previous.bodyOverflow;
+        body.style.paddingRight = previous.bodyPaddingRight;
+        inerted.forEach((node) => {
+          node.inert = false;
+        });
+      }
       ctx.revert();
     };
   }, []);
@@ -455,4 +492,9 @@ export function PortfolioLoader() {
       </div>
     </div>
   );
+}
+
+/** The intro belongs to the home page only. Other routes (case studies) load straight in. */
+export function PortfolioLoader() {
+  return usePathname() === "/" ? <HomeLoader /> : null;
 }

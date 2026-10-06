@@ -20,6 +20,8 @@ export interface SmoothCursorProps {
 
 const DESKTOP_POINTER_QUERY = "(any-hover: hover) and (any-pointer: fine)"
 
+const INTERACTIVE_SELECTOR = "a, button, [role='button']"
+
 function isTrackablePointer(pointerType: string) {
   return pointerType !== "touch"
 }
@@ -97,11 +99,12 @@ export function SmoothCursor({
 }: SmoothCursorProps) {
   const lastMousePos = useRef<Position>({ x: 0, y: 0 })
   const velocity = useRef<Position>({ x: 0, y: 0 })
-  const lastUpdateTime = useRef(Date.now())
+  const lastUpdateTime = useRef(0)
   const previousAngle = useRef(0)
   const accumulatedRotation = useRef(0)
   const [isEnabled, setIsEnabled] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const [isOverInteractive, setIsOverInteractive] = useState(false)
 
   const cursorX = useSpring(0, springConfig)
   const cursorY = useSpring(0, springConfig)
@@ -164,6 +167,9 @@ export function SmoothCursor({
       }
 
       setIsVisible(true)
+      setIsOverInteractive(
+        e.target instanceof Element && !!e.target.closest(INTERACTIVE_SELECTOR)
+      )
 
       const currentPos = { x: e.clientX, y: e.clientY }
       updateVelocity(currentPos)
@@ -213,14 +219,12 @@ export function SmoothCursor({
       })
     }
 
-    document.body.style.cursor = "none"
     window.addEventListener("pointermove", throttledPointerMove, {
       passive: true,
     })
 
     return () => {
       window.removeEventListener("pointermove", throttledPointerMove)
-      document.body.style.cursor = "auto"
       if (rafId) cancelAnimationFrame(rafId)
       if (timeout !== null) {
         clearTimeout(timeout)
@@ -231,6 +235,8 @@ export function SmoothCursor({
   if (!isEnabled) {
     return null
   }
+
+  const showCustom = isVisible && !isOverInteractive
 
   return (
     <motion.div
@@ -245,10 +251,10 @@ export function SmoothCursor({
         zIndex: 10000,
         pointerEvents: "none",
         willChange: "transform",
-        opacity: isVisible ? 1 : 0,
+        opacity: showCustom ? 1 : 0,
       }}
       initial={false}
-      animate={{ opacity: isVisible ? 1 : 0 }}
+      animate={{ opacity: showCustom ? 1 : 0 }}
       transition={{
         duration: 0.15,
       }}

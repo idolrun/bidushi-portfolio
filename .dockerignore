@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.github
+.env*
+.claude
+.cursor
+.agents
+*.tsbuildinfo
+Dockerfile
+docker-compose.yml
+deploy
