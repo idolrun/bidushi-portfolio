@@ -6,14 +6,14 @@ import "motion-icons-react/style.css";
 import { useState } from "react";
 import { Magnetic } from "@/components/ui/magnetic";
 
-/** Back to the vahan section of the works page. */
+/** Back to the home page. */
 export function CaseStudyHomeLink() {
   const [hovered, setHovered] = useState(false);
 
   return (
     <Magnetic radius={6}>
       <Link
-        href="/#vahan"
+        href="/"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className="m-0 inline-flex items-center gap-[0.6em] tracking-[0.3em] lowercase transition-opacity duration-200 hover:opacity-70 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--works-green,#3CFF55)]"

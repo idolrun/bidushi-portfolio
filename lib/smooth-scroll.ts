@@ -17,6 +17,9 @@ export function setLenis(instance: Lenis | null) {
   lenis = instance;
 }
 
+export const lockScroll = () => lenis?.stop();
+export const unlockScroll = () => lenis?.start();
+
 export function scrollToTop(top: number, immediate = false) {
   const reduce =
     immediate ||

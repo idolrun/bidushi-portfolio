@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CometCard } from "@/components/ui/comet-card";
 import { type Ref } from "react";
 import { VahaanCaseStudyLink } from "@/components/works/vahaan/VahaanCaseStudyLink";
 import { VAHAAN_PROJECT } from "@/lib/works/projects";
@@ -39,14 +40,16 @@ export function VahaanMobileSection({
               `vahaan-phone-${key}`,
             )}
           >
-            <Image
-              src={src}
-              alt={alt}
-              width={width}
-              height={1060}
-              sizes="(max-width: 1023px) 27vw, 240px"
-              className="pointer-events-none h-auto w-full"
-            />
+            <CometCard className="pointer-events-auto">
+              <Image
+                src={src}
+                alt={alt}
+                width={width}
+                height={1060}
+                sizes="(max-width: 1023px) 27vw, 240px"
+                className="pointer-events-none h-auto w-full"
+              />
+            </CometCard>
           </div>
         ))}
       </div>

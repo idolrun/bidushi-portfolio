@@ -6,20 +6,16 @@ import {
   CAPTION_DURATION,
   CLOSE_AT,
   CLOSE_DURATION,
+  CLOSE_END,
   FIRST_PAGE_AT,
-  LOGO_FROM_SCALE,
-  LOGO_FROM_Y,
-  LOGO_INTRO_DURATION,
   PAGE_EXIT_DURATION,
   PAGE_HOLD,
   PAGE_IN_DURATION,
   PIN_PERCENT_PER_UNIT,
   SCRUB,
-  WORD_FADE_AT,
-  WORD_FADE_DURATION,
-  WORD_SCALE_DURATION,
 } from "@/lib/animations/worksTiming";
 import { slideInFromRight, slideOutToLeft } from "@/lib/animations/horizontalPages";
+import { dropTitle } from "@/lib/animations/titleDrop";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -51,14 +47,12 @@ const PHONE_FROM_SCALE = 0.92;
 const LOADER_EXIT_DURATION = 0.09;
 
 /**
- * YKSH leaves on an arc around its bottom-right corner. Rotation does the
- * swing; the drift (viewport ratios, eased in later) carries the sheet clear of
- * the pivot, which pure rotation only does near 90°.
+ * YKSH is cut down the middle and the halves slide apart. Each half is a
+ * full-viewport-wide layer clipped to 50%, so ±50% of its width puts the cut
+ * edge at the screen edge; the extra 2% covers the 1px seam overlap. Percentages
+ * keep the cut centred at any viewport width.
  */
-const LOADER_ROTATION = 32;
-const LOADER_DRIFT_X = 0.95;
-const LOADER_DRIFT_Y = -0.3;
-const LOADER_END_SCALE = 0.96;
+const SPLIT_TRAVEL = 52;
 
 /**
  * Outgoing pages finish fading in the first half of the exit; the incoming page
@@ -67,8 +61,8 @@ const LOADER_END_SCALE = 0.96;
 const FADE_OUT_DURATION = PAGE_EXIT_DURATION * 0.5;
 const FADE_IN_DURATION = PAGE_IN_DURATION - FADE_OUT_DURATION;
 
-/** After the intro, before the close. Where "Catchback" in the menu lands. */
-export const WORKS_LOCKUP_VISIBLE = LOGO_INTRO_DURATION;
+/** Title settled, halves merged. Where "Catchback" in the menu lands. */
+export const WORKS_LOCKUP_VISIBLE = CLOSE_END;
 /** Lockup page runs until the phones enter. */
 export const WORKS_PHONES_PAGE = FIRST_PAGE_AT;
 /** Phones page, then its hold, then the pin ends. */
@@ -90,7 +84,7 @@ export type WorksTargets = {
   phonesCaption: HTMLElement;
 };
 
-export type WorksTimelineOptions = {
+type WorksTimelineOptions = {
   /** Scales entry travel. 1 on desktop, shorter on tablet and mobile. */
   distance?: number;
 };
@@ -119,8 +113,8 @@ function frameY(frame: HTMLElement, ratio: number) {
  * close with ease none while it shrinks to 0 (0.10–0.60), the merged lockup
  * holds, then the lockup page slides out left while fading as the phones page
  * slides in from the right (`horizontalPages.ts`). Phones at `FIRST_PAGE_AT`,
- * then the hold to the end of the pin. The loader swings off its bottom-right
- * corner over the first 0.09. Scroll up reverses the same tweens.
+ * then the hold to the end of the pin. The loader splits down the middle and
+ * its halves slide apart over the first 0.09. Scroll up reverses the same tweens.
  */
 export function createWorksTimeline(
   trigger: HTMLElement,
@@ -158,33 +152,16 @@ export function createWorksTimeline(
   const later = { immediateRender: false } as const;
   const overlay = targets.frame.querySelector<HTMLElement>(".works-overlay");
 
-  if (targets.loader) {
-    tl.set(targets.loader, { transformOrigin: "100% 100%" }, 0);
+  const halves = targets.loader?.querySelectorAll<HTMLElement>("[data-loader-half]");
+  halves?.forEach((half) => {
+    const sign = half.dataset.loaderHalf === "left" ? -1 : 1;
     tl.fromTo(
-      targets.loader,
-      { rotation: 0, scale: 1 },
-      {
-        rotation: LOADER_ROTATION * distance,
-        scale: LOADER_END_SCALE,
-        duration: LOADER_EXIT_DURATION,
-        ease: "power2.inOut",
-      },
+      half,
+      { xPercent: 0 },
+      { xPercent: sign * SPLIT_TRAVEL, duration: LOADER_EXIT_DURATION, ease: "none" },
       "loaderExit",
     );
-    tl.fromTo(
-      targets.loader,
-      { x: 0, y: 0 },
-      {
-        // Not scaled by `distance`: clearing the pivot needs about one frame width at any angle.
-        x: widthRatio(LOADER_DRIFT_X),
-        y: heightRatio(LOADER_DRIFT_Y * distance),
-        duration: LOADER_EXIT_DURATION,
-        ease: "power2.in",
-        ...later,
-      },
-      "loaderExit",
-    );
-  }
+  });
 
   tl.set(
     targets.top,
@@ -194,11 +171,6 @@ export function createWorksTimeline(
   tl.set(
     targets.bottom,
     { x: frameX(targets.frame, pieceX), y: frameY(targets.frame, pieceY), autoAlpha: 0 },
-    0,
-  );
-  tl.set(
-    targets.logo,
-    { y: heightRatio(LOGO_FROM_Y * distance), scale: LOGO_FROM_SCALE, autoAlpha: 0, transformOrigin: "50% 50%" },
     0,
   );
   if (overlay) tl.set(overlay, { autoAlpha: 0 }, 0);
@@ -209,13 +181,8 @@ export function createWorksTimeline(
   tl.set(targets.phoneRight, { x: widthRatio(phoneX), y: 0, scale: PHONE_FROM_SCALE, autoAlpha: 0 }, 0);
   tl.set(targets.phonesCaption, { autoAlpha: 0 }, 0);
 
-  // Wordmark emerges from the background, then shrinks away as the halves touch.
-  tl.fromTo(
-    targets.logo,
-    { autoAlpha: 0, y: heightRatio(LOGO_FROM_Y * distance), scale: LOGO_FROM_SCALE },
-    { autoAlpha: 1, y: 0, scale: 1, duration: LOGO_INTRO_DURATION, ...later },
-    0,
-  );
+  // Title starts centred and slides down to rest under the images as the halves close.
+  dropTitle(tl, targets.logo, targets.frame, CLOSE_END);
 
   tl.fromTo(
     targets.top,
@@ -229,19 +196,6 @@ export function createWorksTimeline(
     { x: 0, y: 0, autoAlpha: 1, duration: CLOSE_DURATION, ease: "none", ...later },
     "close",
   );
-  tl.fromTo(
-    targets.logo,
-    { scale: 1 },
-    { scale: 0, duration: WORD_SCALE_DURATION, ease: "none", ...later },
-    "close",
-  );
-  tl.fromTo(
-    targets.logo,
-    { autoAlpha: 1 },
-    { autoAlpha: 0, duration: WORD_FADE_DURATION, ease: "none", ...later },
-    WORD_FADE_AT,
-  );
-
   slideOutToLeft(tl, targets.lockup, "phonesIn", PAGE_EXIT_DURATION, distance);
   slideInFromRight(tl, targets.phonesPage, "phonesIn", PAGE_IN_DURATION, distance);
   tl.fromTo(

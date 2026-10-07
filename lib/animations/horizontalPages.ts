@@ -9,7 +9,7 @@ import gsap from "gsap";
  * Travel is a fraction of the viewport width, scaled by the timeline's
  * `distance` (1 on desktop, shorter on compact layouts).
  */
-export const PAGE_SLIDE_X = 0.45;
+const PAGE_SLIDE_X = 0.45;
 
 const slideX = (distance: number, sign: -1 | 1) => () =>
   sign * window.innerWidth * PAGE_SLIDE_X * distance;

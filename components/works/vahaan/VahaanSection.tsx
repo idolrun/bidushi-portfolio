@@ -3,7 +3,8 @@
 import { useRef } from "react";
 import { VahaanHero } from "@/components/works/vahaan/VahaanHero";
 import { VahaanMobileSection } from "@/components/works/vahaan/VahaanMobileSection";
-import { useVahaanAnimation } from "@/hooks/useVahaanAnimation";
+import { usePinnedScene } from "@/hooks/useWorksAnimation";
+import { createVahaanTimeline, settleVahaanTargets } from "@/lib/animations/vahaanAnimations";
 import "./vahaan.css";
 
 export function VahaanSection() {
@@ -18,7 +19,9 @@ export function VahaanSection() {
   const phoneRightRef = useRef<HTMLDivElement>(null);
   const captionRef = useRef<HTMLDivElement>(null);
 
-  useVahaanAnimation(sectionRef, {
+  usePinnedScene(
+    sectionRef,
+    {
     hero: heroRef,
     phonesPage: phonesPageRef,
     top: topRef,
@@ -28,7 +31,10 @@ export function VahaanSection() {
     phoneCenter: phoneCenterRef,
     phoneRight: phoneRightRef,
     caption: captionRef,
-  });
+    },
+    createVahaanTimeline,
+    settleVahaanTargets,
+  );
 
   return (
     <section

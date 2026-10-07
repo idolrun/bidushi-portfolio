@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, type RefObject } from "react";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import {
@@ -88,6 +88,58 @@ function paintClock(node: HTMLElement, time: string) {
   }
 }
 
+/** Logo + clocks. Rendered once per half so each can be clipped and moved on its own. */
+function YkshPage({
+  logoRef,
+  clocksRef,
+}: {
+  logoRef: RefObject<HTMLDivElement | null>;
+  clocksRef: RefObject<HTMLDivElement | null>;
+}) {
+  return (
+    <>
+      <div
+        ref={logoRef}
+        className="absolute top-0 left-0 z-40 flex w-full justify-center will-change-transform"
+        style={{ transform: "translate3d(0, -120%, 0)" }}
+      >
+        <p className={`m-0 ${logoClass}`} style={{ color: PAPER }}>
+          YKSH
+        </p>
+      </div>
+      <div
+        ref={clocksRef}
+        className="absolute right-0 left-0 z-40 flex justify-center px-[clamp(0.75rem,3vw,2rem)] will-change-transform"
+        style={{
+          bottom: "max(clamp(2.75rem, 14vh, 9.5rem), env(safe-area-inset-bottom, 0px))",
+          transform: "translate3d(0, 100vh, 0)",
+        }}
+      >
+        <ul className="m-0 flex w-full max-w-[44rem] list-none items-stretch justify-center gap-[clamp(0.3rem,0.85vw,0.7rem)] p-0">
+          {CLOCKS.map((clock) => {
+            const zone = clockZone(clock.name, clock.timezone);
+            return (
+              <li
+                key={clock.name}
+                aria-label={`${clock.name}, ${CLOCK_TIME_PLACEHOLDER}`}
+                className="yksh-clock flex min-w-0 flex-1 flex-col items-center justify-center rounded-[14px] border border-white/[0.16] px-[clamp(0.25rem,0.7vw,0.75rem)] py-[clamp(0.55rem,1.15vw,0.85rem)] text-center backdrop-blur-xl"
+              >
+                <span
+                  aria-hidden="true"
+                  className="font-sans text-[clamp(0.5rem,1.15vw,0.78rem)] leading-tight whitespace-nowrap text-white/60"
+                >
+                  {clock.name}
+                </span>
+                <ClockTime timeZone={zone} />
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </>
+  );
+}
+
 function HomeLoader() {
   const rootRef = useRef<HTMLDivElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -97,6 +149,10 @@ function HomeLoader() {
   const lightRef = useRef<HTMLSpanElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
   const clocksRef = useRef<HTMLDivElement>(null);
+  const leftHalfRef = useRef<HTMLDivElement>(null);
+  const rightHalfRef = useRef<HTMLDivElement>(null);
+  const logoRightRef = useRef<HTMLDivElement>(null);
+  const clocksRightRef = useRef<HTMLDivElement>(null);
   const safeTopRef = useRef<HTMLSpanElement>(null);
   const safeBottomRef = useRef<HTMLSpanElement>(null);
 
@@ -109,7 +165,14 @@ function HomeLoader() {
     const light = lightRef.current;
     const logo = logoRef.current;
     const clocks = clocksRef.current;
-    if (!root || !sheet || !darkWrap || !lightWrap || !dark || !light || !logo || !clocks) {
+    const leftHalf = leftHalfRef.current;
+    const rightHalf = rightHalfRef.current;
+    const logoRight = logoRightRef.current;
+    const clocksRight = clocksRightRef.current;
+    if (
+      !root || !sheet || !darkWrap || !lightWrap || !dark || !light || !logo || !clocks ||
+      !leftHalf || !rightHalf || !logoRight || !clocksRight
+    ) {
       return;
     }
 
@@ -244,11 +307,22 @@ function HomeLoader() {
     let settled = false;
     let released = false;
     const percentExitY = () => -(metrics.textH + 48);
+    /**
+     * Cut the settled frame down the middle. Both halves paint the same page, so
+     * nothing moves; the 1px overlap keeps a hairline of Catchback out of the seam.
+     */
+    const armSplit = () => {
+      gsap.set(logoRight, { yPercent: 0, y: centerLogo() });
+      gsap.set(clocksRight, { y: 0 });
+      gsap.set(leftHalf, { clipPath: "inset(0 calc(50% - 1px) 0 0)" });
+      gsap.set(rightHalf, { clipPath: "inset(0 0 0 50%)", autoAlpha: 1 });
+    };
     const placeFinal = () => {
       gsap.set(sheet, { y: 0 });
       gsap.set(wraps, { y: percentExitY(), autoAlpha: 0 });
       gsap.set(logo, { yPercent: 0, y: centerLogo() });
       gsap.set(clocks, { y: 0 });
+      armSplit();
     };
 
     const releaseScroll = () => {
@@ -372,6 +446,7 @@ function HomeLoader() {
           root.removeAttribute("aria-valuemin");
           root.removeAttribute("aria-valuemax");
           root.removeAttribute("aria-valuenow");
+          armSplit();
           releaseScroll();
         }, `reveal+=${REVEAL_DURATION}`);
       });
@@ -418,8 +493,7 @@ function HomeLoader() {
       aria-valuemax={100}
       aria-valuenow={0}
       aria-label="Loading"
-      className="fixed top-0 left-0 z-[200] h-dvh w-full touch-none overflow-hidden select-none"
-      style={{ backgroundColor: PAPER }}
+      className="pointer-events-none fixed top-0 left-0 z-[200] h-dvh w-full touch-none overflow-hidden select-none"
     >
       <span
         ref={safeTopRef}
@@ -431,64 +505,45 @@ function HomeLoader() {
         aria-hidden
         className="pointer-events-none absolute top-0 left-0 block h-[env(safe-area-inset-bottom,0px)] w-px"
       />
-      <div aria-hidden="true" className="absolute inset-0">
-        <div ref={darkWrapRef} className={`z-10 ${anchor}`} style={anchorStyle}>
-          <span ref={darkRef} className={percentClass} style={{ color: INK }}>
-            0%
-          </span>
-        </div>
-        <div
-          ref={sheetRef}
-          className="absolute inset-0 z-20 will-change-transform"
-          style={{ backgroundColor: INK, transform: "translate3d(0, 100%, 0)" }}
-        />
-        <div ref={lightWrapRef} className={`z-30 ${anchor}`} style={anchorStyle}>
-          <span
-            ref={lightRef}
-            className={percentClass}
-            style={{ color: PAPER, clipPath: "inset(100% 0 0 0)" }}
-          >
-            0%
-          </span>
-        </div>
-      </div>
+      {/* Whole frame while loading. Once settled it is clipped to the left half and the exit slides it off. */}
       <div
-        ref={logoRef}
-        className="absolute top-0 left-0 z-40 flex w-full justify-center will-change-transform"
-        style={{ transform: "translate3d(0, -120%, 0)" }}
+        ref={leftHalfRef}
+        data-loader-half="left"
+        className="pointer-events-auto absolute inset-0 will-change-transform"
+        style={{ backgroundColor: PAPER }}
       >
-        <p className={`m-0 ${logoClass}`} style={{ color: PAPER }}>
-          YKSH
-        </p>
+        <div aria-hidden="true" className="absolute inset-0">
+          <div ref={darkWrapRef} className={`z-10 ${anchor}`} style={anchorStyle}>
+            <span ref={darkRef} className={percentClass} style={{ color: INK }}>
+              0%
+            </span>
+          </div>
+          <div
+            ref={sheetRef}
+            className="absolute inset-0 z-20 will-change-transform"
+            style={{ backgroundColor: INK, transform: "translate3d(0, 100%, 0)" }}
+          />
+          <div ref={lightWrapRef} className={`z-30 ${anchor}`} style={anchorStyle}>
+            <span
+              ref={lightRef}
+              className={percentClass}
+              style={{ color: PAPER, clipPath: "inset(100% 0 0 0)" }}
+            >
+              0%
+            </span>
+          </div>
+        </div>
+        <YkshPage logoRef={logoRef} clocksRef={clocksRef} />
       </div>
+      {/* Same settled frame, hidden until the left half is clipped, so the two line up into one page. */}
       <div
-        ref={clocksRef}
-        className="absolute right-0 left-0 z-40 flex justify-center px-[clamp(0.75rem,3vw,2rem)] will-change-transform"
-        style={{
-          bottom: "max(clamp(2.75rem, 14vh, 9.5rem), env(safe-area-inset-bottom, 0px))",
-          transform: "translate3d(0, 100vh, 0)",
-        }}
+        ref={rightHalfRef}
+        data-loader-half="right"
+        aria-hidden="true"
+        className="pointer-events-auto invisible absolute inset-0 will-change-transform"
+        style={{ backgroundColor: INK }}
       >
-        <ul className="m-0 flex w-full max-w-[44rem] list-none items-stretch justify-center gap-[clamp(0.3rem,0.85vw,0.7rem)] p-0">
-          {CLOCKS.map((clock) => {
-            const zone = clockZone(clock.name, clock.timezone);
-            return (
-              <li
-                key={clock.name}
-                aria-label={`${clock.name}, ${CLOCK_TIME_PLACEHOLDER}`}
-                className="yksh-clock flex min-w-0 flex-1 flex-col items-center justify-center rounded-[14px] border border-white/[0.16] px-[clamp(0.25rem,0.7vw,0.75rem)] py-[clamp(0.55rem,1.15vw,0.85rem)] text-center backdrop-blur-xl"
-              >
-                <span
-                  aria-hidden="true"
-                  className="font-sans text-[clamp(0.5rem,1.15vw,0.78rem)] leading-tight whitespace-nowrap text-white/60"
-                >
-                  {clock.name}
-                </span>
-                <ClockTime timeZone={zone} />
-              </li>
-            );
-          })}
-        </ul>
+        <YkshPage logoRef={logoRightRef} clocksRef={clocksRightRef} />
       </div>
     </div>
   );

@@ -44,6 +44,7 @@ Needs Docker with the compose plugin, plus `curl`. The app dir holds `.env`:
 
 ```
 RAPIDAPI_KEY=...
+RESEND_API_KEY=...
 APP_PORT=3005
 ```
 

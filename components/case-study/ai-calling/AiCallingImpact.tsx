@@ -18,8 +18,8 @@ export function AiCallingImpact() {
           {AI_CALLING_IMPACT_HEADING}
         </h2>
         <div className="flex flex-col gap-[clamp(3rem,6vw,5rem)]">
-          <CaseStudyImageRow images={AI_CALLING_SCREENS_TOP} label="Hotline home and campaigns" />
-          <CaseStudyImageRow images={AI_CALLING_SCREENS_BOTTOM} label="Leads and calling" />
+          <CaseStudyImageRow images={AI_CALLING_SCREENS_TOP} label="Hotline home and campaigns" lens />
+          <CaseStudyImageRow images={AI_CALLING_SCREENS_BOTTOM} label="Leads and calling" lens />
         </div>
       </section>
 

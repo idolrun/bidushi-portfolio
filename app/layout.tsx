@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { PortfolioLoader } from "@/components/loader/PortfolioLoader";
 import { LenisProvider } from "@/components/smooth-scroll/LenisProvider";
-import { SmoothCursor } from "@/components/ui/smooth-cursor";
+import { Pointer } from "@/components/ui/pointer";
 import { cn } from "@/lib/utils";
 
 const ghosthey = localFont({
@@ -68,7 +68,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <PortfolioLoader />
         <LenisProvider />
         {children}
-        <SmoothCursor />
+        <Pointer style={{ translateX: "-50%", translateY: "-50%", zIndex: 10000 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/ball-cursor.webp"
+            alt=""
+            width={40}
+            height={40}
+            className="hidden size-10 select-none [@media(any-hover:hover)_and_(any-pointer:fine)]:block"
+          />
+        </Pointer>
       </body>
     </html>
   );

@@ -12,3 +12,10 @@ export const AI_CALLING_PROJECT = {
   label: "AI CALLING",
   caseStudyHref: "/case-study/ai-calling",
 } as const;
+
+export const PAPERIGHT_PROJECT = {
+  id: "paperight",
+  label: "PAPERIGHT.AI",
+  caseStudyLabel: "Read Full Case Study",
+  caseStudyHref: "/case-study/paperight",
+} as const;

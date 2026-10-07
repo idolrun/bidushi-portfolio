@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { slideInFromRight, slideOutToLeft } from "@/lib/animations/horizontalPages";
+import { dropTitle, titleRestY } from "@/lib/animations/titleDrop";
 import { pieceStartX, pieceStartY } from "@/lib/animations/vahaanAnimations";
 
 if (typeof window !== "undefined") {
@@ -19,20 +20,21 @@ const ART_FROM_X = 0.28;
  *
  * paperight logo 0.00 · close 0.30–1.40 · hold · paperightOut 2.40
  * travelIn 2.60 · hold · travelOut 5.05
- * artIn 5.55 · hold · orangeOut 8.05 · end 9.50
+ * bookingIn 5.55 · hold · bookingOut 8.00
+ * artIn 8.50 · hold · orangeOut 11.00 · end 12.45
  */
-/** Halves close as on VAHAN.AI: wordmark first, then the diagonal pieces. */
-const PAPERIGHT_LOGO_IN = 0.3;
+/** Title drops from the start; the diagonal halves close as on VAHAN.AI. */
 const PAPERIGHT_CLOSE_AT = 0.3;
 const PAPERIGHT_CLOSE = 1.1;
-const PAPERIGHT_LOGO_FROM_Y = -0.04;
-const PAPERIGHT_LOGO_FROM_SCALE = 0.96;
 const PAPERIGHT_CAPTION_IN = 0.4;
 const PAPERIGHT_HOLD = 1.0;
 const PAPERIGHT_OUT = 0.5;
 const TRAVEL_IN = 0.6;
 const TRAVEL_HOLD = 1.85;
 const TRAVEL_OUT = 0.5;
+const BOOKING_IN = 0.6;
+const BOOKING_HOLD = 1.85;
+const BOOKING_OUT = 0.5;
 const ART_IN = 0.65;
 const ART_HOLD = 1.85;
 /** Longer than ART_IN; settles in while the art holds (ART_IN + ART_HOLD = 2.5). */
@@ -50,12 +52,14 @@ const PAPERIGHT_MERGED_AT = PAPERIGHT_CLOSE_AT + PAPERIGHT_CLOSE;
 const PAPERIGHT_OUT_AT = PAPERIGHT_MERGED_AT + PAPERIGHT_HOLD;
 const TRAVEL_IN_AT = PAPERIGHT_OUT_AT + PAPERIGHT_OUT - PAGE_OVERLAP;
 const TRAVEL_OUT_AT = TRAVEL_IN_AT + TRAVEL_IN + TRAVEL_HOLD;
-const ART_IN_AT = TRAVEL_OUT_AT + TRAVEL_OUT;
+const BOOKING_IN_AT = TRAVEL_OUT_AT + TRAVEL_OUT;
+const BOOKING_OUT_AT = BOOKING_IN_AT + BOOKING_IN + BOOKING_HOLD;
+const ART_IN_AT = BOOKING_OUT_AT + BOOKING_OUT;
 const ORANGE_OUT_AT = ART_IN_AT + ART_IN + ART_HOLD;
 const END = ORANGE_OUT_AT + ORANGE_OUT + TAIL;
 
-/** Pin length in % of the viewport. About ten screens. */
-const PIN_PERCENT = 1000;
+/** Pin length in % of the viewport. About 105% per timeline unit (END ≈ 12.45). */
+const PIN_PERCENT = 1310;
 
 export const OTHER_WORKS_TRIGGER_ID = "works-other";
 
@@ -68,6 +72,10 @@ export type OtherWorksTargets = {
   paperightPage: HTMLElement;
   travelPage: HTMLElement;
   artPage: HTMLElement;
+  bookingPage: HTMLElement;
+  hotel: HTMLElement;
+  social: HTMLElement;
+  artCaption: HTMLElement;
   travelPhones: HTMLElement;
   travelCard: HTMLElement;
   travelCaption: HTMLElement;
@@ -76,7 +84,7 @@ export type OtherWorksTargets = {
   orange: HTMLElement;
 };
 
-export type OtherWorksTimelineOptions = {
+type OtherWorksTimelineOptions = {
   /** Scales entry travel. 1 on desktop, shorter on tablet and mobile. */
   distance?: number;
 };
@@ -102,6 +110,10 @@ export function createOtherWorksTimeline(
     paperightPage,
     travelPage,
     artPage,
+    bookingPage,
+    hotel,
+    social,
+    artCaption,
     travelPhones,
     travelCard,
     travelCaption,
@@ -115,7 +127,6 @@ export function createOtherWorksTimeline(
   const topFromY = pieceStartY(paperightTop, -1, distance);
   const bottomFromX = pieceStartX(paperightBottom, 1, distance);
   const bottomFromY = pieceStartY(paperightBottom, 1, distance);
-  const logoFromY = vh(PAPERIGHT_LOGO_FROM_Y * distance);
   const phoneFromY = vh(PHONE_FROM_Y * distance);
   const girlFromX = vw(-ART_FROM_X * distance);
   const snackFromX = vw(ART_FROM_X * distance);
@@ -140,25 +151,23 @@ export function createOtherWorksTimeline(
   tl.addLabel("paperightOut", PAPERIGHT_OUT_AT);
   tl.addLabel("travelIn", TRAVEL_IN_AT);
   tl.addLabel("travelOut", TRAVEL_OUT_AT);
+  tl.addLabel("bookingIn", BOOKING_IN_AT);
+  tl.addLabel("bookingOut", BOOKING_OUT_AT);
   tl.addLabel("artIn", ART_IN_AT);
   tl.addLabel("orangeOut", ORANGE_OUT_AT);
   tl.addLabel("end", END);
 
   tl.set(paperightTop, { x: topFromX, y: topFromY, autoAlpha: 0 }, 0);
   tl.set(paperightBottom, { x: bottomFromX, y: bottomFromY, autoAlpha: 0 }, 0);
-  tl.set(
-    paperightLogo,
-    { y: logoFromY, scale: PAPERIGHT_LOGO_FROM_SCALE, autoAlpha: 0, transformOrigin: "50% 50%" },
-    0,
-  );
   tl.set(paperightCaption, { autoAlpha: 0 }, 0);
   tl.set(travelPhones, { y: phoneFromY, autoAlpha: 0 }, 0);
   tl.set([travelCard, travelCaption], { autoAlpha: 0 }, 0);
+  tl.set([hotel, social, artCaption], { autoAlpha: 0 }, 0);
   tl.set(girl, { x: girlFromX, autoAlpha: 0 }, 0);
   tl.set(snack, { x: snackFromX, autoAlpha: 0 }, 0);
   tl.set(orange, { autoAlpha: 0 }, 0);
 
-  // Halves close together; the wordmark shrinks away as they touch.
+  // Halves close together.
   tl.fromTo(
     paperightTop,
     { x: topFromX, y: topFromY, autoAlpha: 0 },
@@ -171,24 +180,8 @@ export function createOtherWorksTimeline(
     { x: 0, y: 0, autoAlpha: 1, duration: PAPERIGHT_CLOSE, ease: "none", ...later },
     "paperightClose",
   );
-  tl.fromTo(
-    paperightLogo,
-    { autoAlpha: 0, y: logoFromY, scale: PAPERIGHT_LOGO_FROM_SCALE },
-    { autoAlpha: 1, y: 0, scale: 1, duration: PAPERIGHT_LOGO_IN, ...later },
-    0,
-  );
-  tl.fromTo(
-    paperightLogo,
-    { scale: 1 },
-    { scale: 0, duration: PAPERIGHT_CLOSE * 0.9, ease: "none", ...later },
-    "paperightClose",
-  );
-  tl.fromTo(
-    paperightLogo,
-    { autoAlpha: 1 },
-    { autoAlpha: 0, duration: PAPERIGHT_CLOSE * 0.09, ease: "none", ...later },
-    PAPERIGHT_MERGED_AT - PAPERIGHT_CLOSE * 0.19,
-  );
+  // Title starts centred and slides down, clearing the caption under the frame.
+  dropTitle(tl, paperightLogo, paperightTop, PAPERIGHT_MERGED_AT, paperightCaption);
   tl.fromTo(
     paperightCaption,
     { autoAlpha: 0 },
@@ -224,12 +217,26 @@ export function createOtherWorksTimeline(
     "travelOut",
   );
 
-  // Orange fades in softly with the polaroids and stays to the end of the pin.
+  // Orange fades in softly with the first polaroids and stays to the end of the pin.
   tl.fromTo(
     orange,
     { autoAlpha: 0 },
     { autoAlpha: 1, duration: ORANGE_IN, ease: "power1.inOut", ...later },
-    "artIn",
+    "bookingIn",
+  );
+  slideInFromRight(tl, bookingPage, "bookingIn", BOOKING_IN, distance, { ease: "power3.out" });
+  tl.fromTo(
+    [hotel, social],
+    { autoAlpha: 0 },
+    { autoAlpha: 1, duration: BOOKING_IN, ease: "power3.out", stagger: 0.08, ...later },
+    "bookingIn",
+  );
+  slideOutToLeft(tl, bookingPage, "bookingOut", BOOKING_OUT, distance);
+  tl.fromTo(
+    bookingPage,
+    { autoAlpha: 1 },
+    { autoAlpha: 0, duration: BOOKING_OUT, ...later },
+    "bookingOut",
   );
   slideInFromRight(tl, artPage, "artIn", ART_IN, distance, { ease: "power3.out" });
   tl.fromTo(
@@ -243,6 +250,12 @@ export function createOtherWorksTimeline(
     { x: snackFromX, autoAlpha: 0 },
     { x: 0, autoAlpha: 1, duration: ART_IN, ease: "power3.out", ...later },
     "artIn",
+  );
+  tl.fromTo(
+    artCaption,
+    { autoAlpha: 0 },
+    { autoAlpha: 1, duration: ART_IN, ease: "power3.out", ...later },
+    "artIn+=0.2",
   );
 
   tl.set({}, {}, END);
@@ -260,6 +273,10 @@ export function settleOtherWorksTargets(targets: OtherWorksTargets) {
     paperightPage,
     travelPage,
     artPage,
+    bookingPage,
+    hotel,
+    social,
+    artCaption,
     travelPhones,
     travelCard,
     travelCaption,
@@ -267,13 +284,13 @@ export function settleOtherWorksTargets(targets: OtherWorksTargets) {
     snack,
     orange,
   } = targets;
-  gsap.set([paperightCaption, paperightPage, travelPage, artPage, travelPhones, travelCard, travelCaption, girl, snack, orange], {
+  gsap.set([paperightCaption, paperightPage, travelPage, artPage, bookingPage, hotel, social, artCaption, travelPhones, travelCard, travelCaption, girl, snack, orange], {
     x: 0,
     y: 0,
     scale: 1,
     autoAlpha: 1,
   });
-  // Touching, wordmark gone.
+  // Touching, title resting under the frame.
   gsap.set([paperightTop, paperightBottom], { x: 0, y: 0, autoAlpha: 1 });
-  gsap.set(paperightLogo, { autoAlpha: 0 });
+  gsap.set(paperightLogo, { y: titleRestY(paperightLogo, paperightTop, paperightCaption), autoAlpha: 1 });
 }

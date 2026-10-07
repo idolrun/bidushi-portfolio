@@ -1,4 +1,4 @@
-export const DEFAULT_LOCAL_TIMEZONE = "Asia/Kathmandu";
+const DEFAULT_LOCAL_TIMEZONE = "Asia/Kathmandu";
 
 export const CLOCKS = [
   { name: "Local Time", timezone: DEFAULT_LOCAL_TIMEZONE },
@@ -10,7 +10,7 @@ export const CLOCKS = [
 
 const TIME_ZONE_PATTERN = /^[A-Za-z]+(?:\/[A-Za-z0-9_+-]+)+$/;
 
-export type ClockReading = {
+type ClockReading = {
   name: string;
   timezone: string;
 };
@@ -35,7 +35,7 @@ export function isValidTimeZone(timeZone: string): boolean {
   }
 }
 
-export function resolveLocalTimeZone(candidate?: string | null): string {
+function resolveLocalTimeZone(candidate?: string | null): string {
   if (candidate && isValidTimeZone(candidate)) return candidate;
   return DEFAULT_LOCAL_TIMEZONE;
 }

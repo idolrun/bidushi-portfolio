@@ -20,7 +20,7 @@ export function VahaanDesignProcess() {
         >
           {VAHAAN_GAME_DESIGN.principles}
         </h2>
-        <CaseStudyImageRow images={VAHAAN_VERSION_1} label="Version 1 screens" />
+        <CaseStudyImageRow images={VAHAAN_VERSION_1} label="Version 1 screens" lens />
       </section>
 
       <section

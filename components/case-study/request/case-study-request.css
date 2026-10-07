@@ -1,0 +1,199 @@
+/* Case study request modal. Motion values follow Transitions.dev (modal + error shake). */
+
+.crm-layer {
+  --crm-card: #fdf5f2;
+  --crm-ink: #0e0e10;
+  --crm-muted: #7a7573;
+  --crm-field: #ebebeb;
+  --crm-green: #0bd40b;
+  --crm-error: #d92d20;
+  --crm-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+}
+
+.crm-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 0.55);
+  opacity: 0;
+  transition: opacity 250ms var(--crm-ease);
+}
+.crm-backdrop.is-open {
+  opacity: 1;
+}
+.crm-backdrop.is-closing {
+  transition-duration: 150ms;
+}
+
+/* .t-modal: closed -> open -> closing */
+.t-modal {
+  position: relative;
+  width: min(100%, 39rem);
+  max-height: 100%;
+  overflow-y: auto;
+  background: var(--crm-card);
+  color: var(--crm-ink);
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity 250ms var(--crm-ease),
+    transform 250ms var(--crm-ease);
+}
+.t-modal.is-open {
+  opacity: 1;
+  transform: scale(1);
+}
+.t-modal.is-closing {
+  transition-duration: 150ms;
+}
+
+.crm-pane {
+  display: flex;
+  min-height: min(25.5rem, calc(100dvh - 2rem));
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.5rem, 5vw, 3rem) clamp(1.25rem, 6vw, 2.9rem);
+  animation: crm-pane-in 250ms var(--crm-ease) both;
+  transition:
+    opacity 150ms var(--crm-ease),
+    transform 150ms var(--crm-ease);
+}
+.crm-pane.is-leaving {
+  opacity: 0;
+  transform: scale(0.98);
+}
+@keyframes crm-pane-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+.crm-title {
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  font-size: clamp(2rem, 8.5vw, 3.1rem);
+}
+
+.crm-copy {
+  margin: 1.1rem auto 0;
+  max-width: 24rem;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.crm-label {
+  display: block;
+  margin-top: 1.6rem;
+  font-size: 0.8rem;
+  color: var(--crm-muted);
+}
+
+/* .t-input: error state + shake */
+.t-input-wrap {
+  margin-top: 0.5rem;
+}
+.t-input {
+  display: block;
+  width: 100%;
+  height: 2.5rem;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: var(--crm-field);
+  padding: 0 0.75rem;
+  color: var(--crm-ink);
+  font: inherit;
+  font-size: 1rem; /* >=16px stops iOS zoom on focus */
+  outline: none;
+  transition: border-color 200ms var(--crm-ease);
+}
+.t-input:focus-visible {
+  border-color: var(--crm-ink);
+}
+.t-input.is-error,
+.t-input-wrap.is-error .t-input {
+  border-color: var(--crm-error);
+}
+.t-input.is-shaking {
+  animation: crm-shake 280ms var(--crm-ease);
+}
+@keyframes crm-shake {
+  0% {
+    transform: translateX(0);
+  }
+  28.5% {
+    transform: translateX(-6px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  78.5% {
+    transform: translateX(-3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.t-error-msg {
+  min-height: 1.1rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.1rem;
+  color: var(--crm-error);
+}
+.t-error-msg.is-visible {
+  animation: crm-fade-in 200ms var(--crm-ease) both;
+}
+@keyframes crm-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.crm-submit {
+  min-width: 9.2rem;
+  height: 2.1rem;
+  border: 0;
+  border-radius: 0;
+  background: var(--crm-green);
+  color: #fff;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 200ms var(--crm-ease);
+}
+.crm-submit:focus-visible {
+  outline: 2px solid var(--crm-ink);
+  outline-offset: 3px;
+}
+.crm-submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-modal,
+  .t-modal.is-open,
+  .crm-pane,
+  .crm-pane.is-leaving {
+    transform: none;
+    animation: none;
+  }
+  .t-input.is-shaking {
+    animation: none;
+  }
+}

@@ -13,7 +13,7 @@ import {
   AI_CALLING_TOC,
 } from "@/lib/case-study/ai-calling";
 import { CASE_STUDY_OVERVIEW } from "@/lib/case-study/shared";
-import { VAHAAN_PROJECT } from "@/lib/works/projects";
+import { PAPERIGHT_PROJECT, VAHAAN_PROJECT } from "@/lib/works/projects";
 
 export function AiCallingCaseStudy() {
   return (
@@ -42,11 +42,18 @@ export function AiCallingCaseStudy() {
         />
       }
       footer={
-        <CaseStudyNextLink
-          direction="prev"
-          href={VAHAAN_PROJECT.caseStudyHref}
-          label="View VAHAN.AI Case Study"
-        />
+        <div className="flex flex-col items-center sm:flex-row sm:justify-between sm:gap-6">
+          <CaseStudyNextLink
+            direction="prev"
+            href={VAHAAN_PROJECT.caseStudyHref}
+            label="View VAHAN.AI Case Study"
+          />
+          <CaseStudyNextLink
+            direction="next"
+            href={PAPERIGHT_PROJECT.caseStudyHref}
+            label="Explore Paperight Case Study"
+          />
+        </div>
       }
     >
       <CaseStudyOverview overview={CASE_STUDY_OVERVIEW} />

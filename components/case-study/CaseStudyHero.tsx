@@ -11,8 +11,8 @@ type Props = {
   /** Big wordmark. Visual only; `ariaLabel` names the heading for screen readers. */
   wordmark: ReactNode;
   ariaLabel: string;
-  title: string;
-  subtitle: string;
+  title?: string;
+  subtitle?: string;
   phones: readonly CaseStudyPhone[];
   /** The other case study, top right. */
   sibling: { href: string; label: ReactNode; ariaLabel: string };
@@ -45,13 +45,17 @@ export function CaseStudyHero({ wordmark, ariaLabel, title, subtitle, phones, si
           >
             {wordmark}
           </span>
-          <span className="mt-[clamp(0.75rem,2vw,2rem)] block w-full border-t border-white/15 pt-[clamp(1rem,2vw,2rem)] text-center text-[clamp(1.25rem,2.6vw,2.25rem)] leading-tight font-light tracking-[0.01em]">
-            {title}
-          </span>
+          {title ? (
+            <span className="mt-[clamp(0.75rem,2vw,2rem)] block w-full border-t border-white/15 pt-[clamp(1rem,2vw,2rem)] text-center text-[clamp(1.25rem,2.6vw,2.25rem)] leading-tight font-light tracking-[0.01em]">
+              {title}
+            </span>
+          ) : null}
         </h1>
-        <p className="m-0 mt-[clamp(0.5rem,1vw,1rem)] max-w-[40rem] text-center text-[clamp(0.8rem,1.1vw,1rem)] leading-snug text-white/80">
-          {subtitle}
-        </p>
+        {subtitle ? (
+          <p className="m-0 mt-[clamp(0.5rem,1vw,1rem)] max-w-[40rem] text-center text-[clamp(0.8rem,1.1vw,1rem)] leading-snug text-white/80">
+            {subtitle}
+          </p>
+        ) : null}
 
         <div className="mt-[clamp(2rem,4vw,3.5rem)] w-full">
           <CaseStudyHeroPhones phones={phones} />

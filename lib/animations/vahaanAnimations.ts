@@ -5,20 +5,16 @@ import {
   CAPTION_DURATION,
   CLOSE_AT,
   CLOSE_DURATION,
+  CLOSE_END,
   FIRST_PAGE_AT,
-  LOGO_FROM_SCALE,
-  LOGO_FROM_Y,
-  LOGO_INTRO_DURATION,
   PAGE_EXIT_DURATION,
   PAGE_HOLD,
   PAGE_IN_DURATION,
   PIN_PERCENT_PER_UNIT,
   SCRUB,
-  WORD_FADE_AT,
-  WORD_FADE_DURATION,
-  WORD_SCALE_DURATION,
 } from "@/lib/animations/worksTiming";
 import { slideInFromRight, slideOutToLeft } from "@/lib/animations/horizontalPages";
+import { dropTitle } from "@/lib/animations/titleDrop";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -59,7 +55,7 @@ export type VahaanTargets = {
   caption: HTMLElement;
 };
 
-export type VahaanTimelineOptions = {
+type VahaanTimelineOptions = {
   /** Scales entry travel. 1 on desktop, shorter on tablet and mobile. */
   distance?: number;
 };
@@ -81,7 +77,7 @@ export function pieceStartY(piece: HTMLElement, sign: -1 | 1, distance: number) 
  * so scrolling up runs the same tweens backwards.
  *
  * Pacing lives in `worksTiming.ts`, shared with Catchback. The halves end touching at (0, 0) and the wordmark
- * shrinks to nothing over the close, as on Catchback.
+ * drops in and rests under the images, as on Catchback.
  */
 export function createVahaanTimeline(
   trigger: HTMLElement,
@@ -97,7 +93,6 @@ export function createVahaanTimeline(
   const topFromY = pieceStartY(top, -1, distance);
   const bottomFromX = pieceStartX(bottom, 1, distance);
   const bottomFromY = pieceStartY(bottom, 1, distance);
-  const logoFromY = vh(LOGO_FROM_Y * distance);
   const phoneX = PHONE_X * distance;
   const phoneY = PHONE_Y * distance;
 
@@ -124,7 +119,6 @@ export function createVahaanTimeline(
   tl.set(hero, { x: 0, autoAlpha: 1 }, 0);
   tl.set(top, { x: topFromX, y: topFromY, autoAlpha: 0 }, 0);
   tl.set(bottom, { x: bottomFromX, y: bottomFromY, autoAlpha: 0 }, 0);
-  tl.set(logo, { y: logoFromY, scale: LOGO_FROM_SCALE, autoAlpha: 0, transformOrigin: "50% 50%" }, 0);
   tl.set(phoneLeft, { x: vw(-phoneX), y: 0, scale: PHONE_FROM_SCALE, autoAlpha: 0 }, 0);
   tl.set(phoneCenter, { x: 0, y: vh(phoneY), scale: PHONE_FROM_SCALE, autoAlpha: 0 }, 0);
   tl.set(phoneRight, { x: vw(phoneX), y: 0, scale: PHONE_FROM_SCALE, autoAlpha: 0 }, 0);
@@ -144,25 +138,8 @@ export function createVahaanTimeline(
     "close",
   );
 
-  // Wordmark emerges from the background, then shrinks away as the halves touch.
-  tl.fromTo(
-    logo,
-    { autoAlpha: 0, y: logoFromY, scale: LOGO_FROM_SCALE },
-    { autoAlpha: 1, y: 0, scale: 1, duration: LOGO_INTRO_DURATION, ...later },
-    0,
-  );
-  tl.fromTo(
-    logo,
-    { scale: 1 },
-    { scale: 0, duration: WORD_SCALE_DURATION, ease: "none", ...later },
-    "close",
-  );
-  tl.fromTo(
-    logo,
-    { autoAlpha: 1 },
-    { autoAlpha: 0, duration: WORD_FADE_DURATION, ease: "none", ...later },
-    WORD_FADE_AT,
-  );
+  // Title starts centred and slides down to rest under the images as the halves close.
+  dropTitle(tl, logo, top, CLOSE_END);
 
   // Hero leaves left as the phones page slides in from the right and converges.
   slideOutToLeft(tl, hero, "phonesIn", PAGE_EXIT_DURATION, distance);

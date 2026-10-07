@@ -68,7 +68,7 @@ export function usePinnedScene<T extends Record<string, HTMLElement>>(
   );
 }
 
-export type WorksAnimationRefs = SceneRefs<Omit<WorksTargets, "loader">>;
+type WorksAnimationRefs = SceneRefs<Omit<WorksTargets, "loader">>;
 
 export function useWorksAnimation(
   scopeRef: RefObject<HTMLElement | null>,

@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
+import { CometCard } from "@/components/ui/comet-card";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import type { CaseStudyPhone } from "@/lib/case-study/shared";
@@ -53,17 +54,19 @@ export function CaseStudyHeroPhones({ phones }: { phones: readonly CaseStudyPhon
         <div
           key={phone.src}
           data-phone
-          className="w-[48%] will-change-transform"
+          className={`${phones.length === 1 ? "w-[90%]" : "w-[48%]"} will-change-transform`}
         >
-          <Image
-            src={phone.src}
-            alt={phone.alt}
-            width={phone.width}
-            height={phone.height}
-            sizes="(min-width: 640px) 20rem, 44vw"
-            priority
-            className="h-auto w-full"
-          />
+          <CometCard>
+            <Image
+              src={phone.src}
+              alt={phone.alt}
+              width={phone.width}
+              height={phone.height}
+              sizes="(min-width: 640px) 20rem, 44vw"
+              priority
+              className="h-auto w-full"
+            />
+          </CometCard>
         </div>
       ))}
     </div>

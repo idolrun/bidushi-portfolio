@@ -13,7 +13,11 @@ import {
 } from "@/hooks/useWorksPageProgress";
 import { OTHER_WORKS_TRIGGER_ID } from "@/lib/animations/otherWorksAnimations";
 import { VAHAAN_TRIGGER_ID } from "@/lib/animations/vahaanAnimations";
-import { scrollToCatchback, scrollToVahaan } from "@/lib/smooth-scroll";
+import {
+  scrollToCatchback,
+  scrollToOtherWorks,
+  scrollToVahaan,
+} from "@/lib/smooth-scroll";
 import { cn } from "@/lib/utils";
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
@@ -25,6 +29,9 @@ const PROJECTS = [
 
 const menuItemClass =
   "m-0 border-0 bg-transparent p-0 font-serif text-[length:inherit] leading-none font-semibold tracking-[inherit] whitespace-nowrap text-white italic";
+
+/** Dropdown entries. Paperight lives in the other-works pin, so it is not a view of its own. */
+const MENU = [...PROJECTS, { id: "paperight", label: "PAPERIGHT.AI" }] as const;
 
 export type WorksView = (typeof PROJECTS)[number]["id"] | "other";
 
@@ -78,11 +85,12 @@ export function WorksHeader({ current }: { current: WorksView }) {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const choose = (id: (typeof PROJECTS)[number]["id"]) => {
+  const choose = (id: (typeof MENU)[number]["id"]) => {
     cancelClose();
     setOpen(false);
     if (id === "catchback") scrollToCatchback();
-    else scrollToVahaan();
+    else if (id === "vahan") scrollToVahaan();
+    else scrollToOtherWorks();
   };
 
   return (
@@ -135,7 +143,7 @@ export function WorksHeader({ current }: { current: WorksView }) {
                   transition={{ duration: 0.22, ease: EASE_OUT }}
                   className="absolute top-full left-1/2 z-40 m-0 mt-2 flex -translate-x-1/2 list-none flex-col items-center gap-1.5 p-0"
                 >
-                  {PROJECTS.filter((project) => project.id !== current).map(
+                  {MENU.filter((project) => project.id !== current).map(
                     (project) => (
                       <li key={project.id} role="none">
                         <button

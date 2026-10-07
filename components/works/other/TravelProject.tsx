@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CometCard } from "@/components/ui/comet-card";
 import { type Ref } from "react";
 import { TravelInfoCard } from "@/components/works/other/TravelInfoCard";
 
@@ -31,14 +32,16 @@ export function TravelProject({ pageRef, phonesRef, cardRef, captionRef }: Trave
         >
           {PHONES.map(({ src, alt }) => (
             <div key={src} className="w-[clamp(6.75rem,min(30vw,32vh),17.5rem)]">
-              <Image
-                src={src}
-                alt={alt}
-                width={639}
-                height={1063}
-                sizes="(max-width: 1023px) 42vw, 280px"
-                className="pointer-events-none h-auto w-full"
-              />
+              <CometCard className="pointer-events-auto">
+                <Image
+                  src={src}
+                  alt={alt}
+                  width={639}
+                  height={1063}
+                  sizes="(max-width: 1023px) 42vw, 280px"
+                  className="pointer-events-none h-auto w-full"
+                />
+              </CometCard>
             </div>
           ))}
         </div>

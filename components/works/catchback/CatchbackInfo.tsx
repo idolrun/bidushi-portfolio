@@ -1,4 +1,7 @@
-import { forwardRef } from "react";
+"use client";
+
+import { forwardRef, useCallback, useState } from "react";
+import { CaseStudyRequestModal } from "@/components/case-study/request/CaseStudyRequestModal";
 import { cn } from "@/lib/utils";
 
 type CatchbackInfoProps = {
@@ -7,6 +10,9 @@ type CatchbackInfoProps = {
 
 export const CatchbackInfo = forwardRef<HTMLDivElement, CatchbackInfoProps>(
   function CatchbackInfo({ className }, ref) {
+    const [requestOpen, setRequestOpen] = useState(false);
+    const closeRequest = useCallback(() => setRequestOpen(false), []);
+
     return (
       <div
         ref={ref}
@@ -20,9 +26,15 @@ export const CatchbackInfo = forwardRef<HTMLDivElement, CatchbackInfoProps>(
           recovery revenue in their systems.
         </p>
         <p className="m-0 mt-[0.85rem]">Lead Product Designer</p>
-        <p className="m-0 mt-[0.7rem] text-[var(--works-green,#3CFF55)] underline">
+        <button
+          type="button"
+          onClick={() => setRequestOpen(true)}
+          aria-haspopup="dialog"
+          className="pointer-events-auto m-0 mt-[0.7rem] cursor-pointer border-0 bg-transparent p-0 font-[inherit] text-[length:inherit] text-[var(--works-green,#3CFF55)] underline underline-offset-[0.2em] transition-opacity duration-200 hover:opacity-70 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--works-green,#3CFF55)]"
+        >
           Request Access for case study
-        </p>
+        </button>
+        <CaseStudyRequestModal open={requestOpen} onClose={closeRequest} />
       </div>
     );
   },

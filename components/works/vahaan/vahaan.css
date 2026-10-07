@@ -50,7 +50,7 @@
 
 .vahaan-logo {
   transform-origin: 50% 50%;
-  transform: translate3d(0, -4vh, 0) scale(0.96);
+  transform: translate3d(0, 0, 0);
   opacity: 0;
   visibility: hidden;
   /* Faint lift off the dark ground. Not a neon glow. */
@@ -90,7 +90,7 @@
   }
 
   .vahaan-logo {
-    transform: translate3d(0, -2.48vh, 0) scale(0.96);
+    transform: translate3d(0, 0, 0);
   }
 
   .vahaan-phone-left {

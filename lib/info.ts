@@ -10,17 +10,16 @@ export const INFO_BIOGRAPHY = {
 
 export const INFO_RESEARCH = {
   heading: "Research",
-  items: ["Structural DNA Scanner (SDS)", "Logical Continuity Engine (LCE)"],
+  items: ["WIngates Ontology (ongoing)", "Fuel Management system (aviation)"],
 } as const;
 
 export const INFO_AWARDS = {
   heading: "Awards",
   year: "2023",
   lines: [
-    "🏆 2nd Place - She Loves Tech",
-    "Global Singapore | ROAM Travel",
-    "Tech International startup",
-    "competition",
+    "🏆 2nd Place - She Loves Tech Global",
+    "Singapore | ROAM Travel Tech",
+    "International startup competition",
   ],
   logo: {
     src: "/images/she-love-tech.webp",

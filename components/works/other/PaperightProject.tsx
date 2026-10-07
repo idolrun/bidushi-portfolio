@@ -1,5 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 import { type Ref } from "react";
+import { PAPERIGHT_PROJECT } from "@/lib/works/projects";
 
 type PaperightProjectProps = {
   pageRef: Ref<HTMLDivElement>;
@@ -73,8 +75,13 @@ export function PaperightProject({
           0–1 AI analytical tool for 4th year computer science students
         </p>
         <p className="m-0 mt-[0.85rem]">Lead Product Designer</p>
-        <p className="m-0 mt-[0.7rem] text-[var(--works-green,#3CFF55)] underline">
-          Request Full case study
+        <p className="m-0 mt-[0.7rem]">
+          <Link
+            href={PAPERIGHT_PROJECT.caseStudyHref}
+            className="pointer-events-auto inline-block text-[var(--works-green,#3CFF55)] underline underline-offset-[0.2em] transition-opacity duration-200 hover:opacity-70 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--works-green,#3CFF55)]"
+          >
+            {PAPERIGHT_PROJECT.caseStudyLabel}
+          </Link>
         </p>
       </div>
     </div>

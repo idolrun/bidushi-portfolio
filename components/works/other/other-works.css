@@ -50,7 +50,7 @@
 
 .other-paperight-logo {
   transform-origin: 50% 50%;
-  transform: translate3d(0, -4vh, 0) scale(0.96);
+  transform: translate3d(0, 0, 0);
   opacity: 0;
   visibility: hidden;
 }
@@ -68,7 +68,10 @@
 
 .other-travel-card,
 .other-travel-caption,
-.other-orange {
+.other-orange,
+.other-hotel,
+.other-social,
+.other-art-caption {
   opacity: 0;
   visibility: hidden;
 }
@@ -95,7 +98,7 @@
   }
 
   .other-paperight-logo {
-    transform: translate3d(0, -2.48vh, 0) scale(0.96);
+    transform: translate3d(0, 0, 0);
   }
 
   .other-phones {
@@ -133,7 +136,10 @@
   .other-snack,
   .other-travel-card,
   .other-travel-caption,
-  .other-orange {
+  .other-orange,
+  .other-hotel,
+  .other-social,
+  .other-art-caption {
     transform: none !important;
     opacity: 1 !important;
     visibility: visible !important;
