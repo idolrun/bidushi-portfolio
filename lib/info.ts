@@ -3,8 +3,8 @@
 export const INFO_BIOGRAPHY = {
   dropCap: "B",
   paragraphs: [
-    "idushi Thapa is a Game and Product designer specializing in AI , Product/Game designs and Creative Direction. She works with start ups across travel, education , gig economies , non-profit industries globally .",
-    "Bidushi's design practice explores essence of usability and understanding realms to bridge AI and humans with design. With creativity experimentation and creative thinking at teh center of the process. Bidushi's passion for design also gives her meticulous eye for layout , typography ,hierarchical systems and confidence with color which can nbe seen thought her work crafted carefully",
+    "idushi Thapa is a Game and Product designer specializing in AI , Product/Game designs and Creative Direction. She works with start ups across travel, education , gig economies , non-profit industries globally.",
+    "Bidushi's design practice explores essence of usability and understanding realms to bridge AI and humans with design. With creativity experimentation and creative thinking at the center of the process. Bidushi's passion for design also gives her meticulous eye for layout , typography ,hierarchical systems and confidence with color which can nbe seen thought her work crafted carefully.",
   ],
 } as const;
 
