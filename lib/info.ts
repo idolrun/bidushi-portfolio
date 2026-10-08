@@ -46,10 +46,12 @@ export const INFO_CONTACT = {
     {
       label: "Linkedin",
       value: "hello@bidushi.design",
+      href: "https://www.linkedin.com/in/bidushi-t-026a9758/",
     },
     {
       label: "Instagram",
       value: "--yksh",
+      href: "https://www.instagram.com/__yksh/",
     },
   ] satisfies InfoContactItem[],
 } as const;
