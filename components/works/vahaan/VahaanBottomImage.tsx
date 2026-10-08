@@ -8,10 +8,10 @@ export const VahaanBottomImage = forwardRef<HTMLDivElement>(function VahaanBotto
   return (
     <div ref={ref} aria-hidden="true" className="vahaan-bottom">
       <Image
-        src="/images/vahan_bottom.webp"
+        src="/images/vahan_hero_bottom_right.webp"
         alt=""
-        width={1300}
-        height={730}
+        width={1248}
+        height={1460}
         preload
         unoptimized
         sizes="(max-width: 1023px) 78vw, 34rem"

@@ -23,17 +23,17 @@ if (typeof window !== "undefined") {
 
 /**
  * Each half leaves the merged frame along the screen normal of the diagonal.
- * The cut is x = 1298.5 − 1.7777y on the 1300×750 asset, so the normal that
- * points from the top half toward the bottom half is (0.4904, 0.8717).
+ * The cut is x = 1248 − 0.8548y on the 1248×1460 asset, so the normal that
+ * points from the top half toward the bottom half is (0.7601, 0.6498).
  * Offsets are fractions of the frame, not the viewport: a vw/vh travel slides
  * the halves along the cut once the frame hits its max width, and the two
  * diagonals stop lining up.
  * `PIECE_DISTANCE` is that travel as a fraction of frame height.
  */
-const SEAM_NX = 0.4904;
-const SEAM_NY = 0.8717;
+const SEAM_NX = 0.7601;
+const SEAM_NY = 0.6498;
 const PIECE_DISTANCE = 0.48;
-const FRAME_ASPECT = 750 / 1300;
+const FRAME_ASPECT = 1460 / 1248;
 const PIECE_X_RATIO = PIECE_DISTANCE * FRAME_ASPECT * SEAM_NX;
 const PIECE_Y_RATIO = PIECE_DISTANCE * SEAM_NY;
 const PHONE_X = 0.28;

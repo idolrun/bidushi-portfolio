@@ -21,11 +21,11 @@ export function CatchbackScene({
   return (
     <div className="works-scene pointer-events-none absolute inset-0 z-10">
       <div ref={lockupRef} className="works-lockup absolute inset-0 flex items-center justify-center">
-        <div className="relative w-[min(78vw,calc(54vh*1300/750),34rem)]">
+        <div className="relative w-[min(78vw,calc(54vh*1248/1460),34rem)]">
           <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
             <CatchbackLogo ref={logoRef} />
           </div>
-          <div ref={frameRef} className="works-frame relative z-10 aspect-[1300/750] w-full">
+          <div ref={frameRef} className="works-frame relative z-10 aspect-[1248/1460] w-full">
             <CatchbackTopImage ref={topRef} />
             <CatchbackBottomImage ref={bottomRef} />
             <div className="works-overlay" aria-hidden="true" />

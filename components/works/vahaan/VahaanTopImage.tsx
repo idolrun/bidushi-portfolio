@@ -5,10 +5,10 @@ export const VahaanTopImage = forwardRef<HTMLDivElement>(function VahaanTopImage
   return (
     <div ref={ref} className="vahaan-top">
       <Image
-        src="/images/vahan_top.webp"
+        src="/images/vahan_hero_top_left.webp"
         alt="VAHAN.AI app, upper diagonal of the wallet home screen"
-        width={1300}
-        height={730}
+        width={1248}
+        height={1460}
         preload
         unoptimized
         sizes="(max-width: 1023px) 78vw, 34rem"

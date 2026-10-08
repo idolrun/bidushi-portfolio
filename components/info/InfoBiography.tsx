@@ -2,7 +2,7 @@ import { INFO_BIOGRAPHY } from "@/lib/info";
 import { cn } from "@/lib/utils";
 
 const bodyClass =
-  "m-0 font-sans text-[clamp(1rem,1.55vw,1.42rem)] leading-[1.4] font-normal text-white";
+  "m-0 font-sans text-[clamp(0.875rem,1.3vw,1.2rem)] leading-[1.4] font-normal text-white";
 
 export function InfoBiography({ className }: { className?: string }) {
   const [lead, body] = INFO_BIOGRAPHY.paragraphs;

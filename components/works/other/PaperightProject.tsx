@@ -26,10 +26,10 @@ export function PaperightProject({
       <div className="other-paperight-frame relative">
         <div ref={topRef} className="other-paperight-top">
           <Image
-            src="/images/paperight_top.webp"
+            src="/images/paperight_hero_top_left.webp"
             alt="Paperight mission page, upper diagonal"
-            width={1300}
-            height={730}
+            width={1806}
+            height={2048}
             preload
             unoptimized
             sizes="(max-width: 1023px) 78vw, 34rem"
@@ -38,10 +38,10 @@ export function PaperightProject({
         </div>
         <div ref={bottomRef} aria-hidden="true" className="other-paperight-bottom">
           <Image
-            src="/images/paperight_bottom.webp"
+            src="/images/paperight_hero_bottom_right.webp"
             alt=""
-            width={1300}
-            height={730}
+            width={1806}
+            height={2048}
             preload
             unoptimized
             sizes="(max-width: 1023px) 78vw, 34rem"

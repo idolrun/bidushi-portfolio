@@ -1,12 +1,12 @@
 /*
- * Frame width, as on Catchback. Both 1300×730 halves fill the frame and rest
+ * Frame width, as on Catchback. Both 1248×1460 halves fill the frame and rest
  * touching at (0, 0). Start offsets run along the diagonal cut's normal
- * (0.4896, 0.8719), as a share of the piece: x = 0.48 × H × 0.4896 =
- * 13.2% of W, y = 0.48 × 0.8719 = 41.85% of H, × 0.62 on compact. GSAP owns
+ * (0.7601, 0.6498), as a share of the piece: x = 0.48 × H × 0.7601 =
+ * 42.68% of W, y = 0.48 × 0.6498 = 31.19% of H, × 0.62 on compact. GSAP owns
  * the transform; these only stop a flash before it runs.
  */
 .vahaan-scene {
-  --vf: min(78vw, calc(54vh * 1300 / 730), 34rem);
+  --vf: min(78vw, calc(54vh * 1248 / 1460), 34rem);
 }
 
 .vahaan-top,
@@ -23,18 +23,18 @@
   top: 50%;
   left: 50%;
   width: var(--vf);
-  aspect-ratio: 1300 / 730;
-  margin: calc(var(--vf) * 730 / 1300 / -2) 0 0 calc(var(--vf) / -2);
+  aspect-ratio: 1248 / 1460;
+  margin: calc(var(--vf) * 1460 / 1248 / -2) 0 0 calc(var(--vf) / -2);
   opacity: 0;
   visibility: hidden;
 }
 
 .vahaan-top {
-  transform: translate3d(-13.2%, -41.85%, 0);
+  transform: translate3d(-42.68%, -31.19%, 0);
 }
 
 .vahaan-bottom {
-  transform: translate3d(13.2%, 41.85%, 0);
+  transform: translate3d(42.68%, 31.19%, 0);
 }
 
 .vahaan-piece {
@@ -45,7 +45,7 @@
 
 /* ~1.5px along the cut's normal so the antialiased seam fringe is covered. */
 .vahaan-piece-bottom {
-  transform: translate3d(-0.06%, -0.17%, 0);
+  transform: translate3d(-0.09%, -0.07%, 0);
 }
 
 .vahaan-logo {
@@ -82,11 +82,11 @@
 
 @media (max-width: 1023px) {
   .vahaan-top {
-    transform: translate3d(-8.18%, -25.95%, 0);
+    transform: translate3d(-26.46%, -19.34%, 0);
   }
 
   .vahaan-bottom {
-    transform: translate3d(8.18%, 25.95%, 0);
+    transform: translate3d(26.46%, 19.34%, 0);
   }
 
   .vahaan-logo {

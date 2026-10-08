@@ -14,11 +14,11 @@
   will-change: transform;
 }
 
-/* Frame width and seam offsets match vahaan.css; GSAP owns the transform. */
+/* Frame width and seam offsets follow vahaan.css (shared seam normal); GSAP owns the transform. */
 .other-paperight-frame {
-  --pf: min(78vw, calc(46vh * 1300 / 730), 34rem);
+  --pf: min(78vw, calc(46vh * 1806 / 2048), 34rem);
   width: var(--pf);
-  aspect-ratio: 1300 / 730;
+  aspect-ratio: 1806 / 2048;
 }
 
 .other-paperight-top,
@@ -30,11 +30,11 @@
 }
 
 .other-paperight-top {
-  transform: translate3d(-13.2%, -41.85%, 0);
+  transform: translate3d(-41.38%, -31.19%, 0);
 }
 
 .other-paperight-bottom {
-  transform: translate3d(13.2%, 41.85%, 0);
+  transform: translate3d(41.38%, 31.19%, 0);
 }
 
 .other-paperight-piece {
@@ -45,7 +45,7 @@
 
 /* ~1.5px along the cut's normal so the antialiased seam fringe is covered. */
 .other-paperight-piece-bottom {
-  transform: translate3d(-0.06%, -0.17%, 0);
+  transform: translate3d(-0.06%, -0.05%, 0);
 }
 
 .other-paperight-logo {
@@ -90,11 +90,11 @@
 
 @media (max-width: 1023px) {
   .other-paperight-top {
-    transform: translate3d(-8.18%, -25.95%, 0);
+    transform: translate3d(-25.66%, -19.34%, 0);
   }
 
   .other-paperight-bottom {
-    transform: translate3d(8.18%, 25.95%, 0);
+    transform: translate3d(25.66%, 19.34%, 0);
   }
 
   .other-paperight-logo {

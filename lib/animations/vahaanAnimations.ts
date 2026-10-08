@@ -22,14 +22,15 @@ if (typeof window !== "undefined") {
 
 /**
  * Each half starts apart along the normal of its diagonal cut. On the
- * 1300×730 assets the cut runs corner to corner, so the normal pointing from
- * the top half toward the bottom half is (0.4896, 0.8719). Offsets are a
+ * 1248×1460 assets the cut runs corner to corner, so the normal pointing from
+ * the top half toward the bottom half is (0.7601, 0.6498). Paperight's
+ * 1806×2048 halves share it (its own normal is (0.7500, 0.6613)). Offsets are a
  * fraction of the piece height, not the viewport, so the two diagonals stay
  * parallel at any size and touch exactly at rest (0, 0).
  * Compact layouts multiply the travel by `distance`.
  */
-const SEAM_NX = 0.4896;
-const SEAM_NY = 0.8719;
+const SEAM_NX = 0.7601;
+const SEAM_NY = 0.6498;
 const PIECE_DISTANCE = 0.48;
 const PHONE_X = 0.28;
 const PHONE_Y = 0.18;

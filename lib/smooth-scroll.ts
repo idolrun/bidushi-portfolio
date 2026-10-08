@@ -20,14 +20,21 @@ export function setLenis(instance: Lenis | null) {
 export const lockScroll = () => lenis?.stop();
 export const unlockScroll = () => lenis?.start();
 
-export function scrollToTop(top: number, immediate = false) {
+type ScrollOptions = { duration?: number; easing?: (t: number) => number };
+
+export function scrollToTop(top: number, immediate = false, options: ScrollOptions = {}) {
   const reduce =
     immediate ||
     (typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   if (lenis) {
-    lenis.scrollTo(top, { immediate: reduce, duration: reduce ? 0 : 1.1, force: true });
+    lenis.scrollTo(top, {
+      immediate: reduce,
+      duration: reduce ? 0 : (options.duration ?? 1.1),
+      easing: options.easing,
+      force: true,
+    });
     return;
   }
 
@@ -35,10 +42,14 @@ export function scrollToTop(top: number, immediate = false) {
 }
 
 /** Scroll to the catchback lockup, just after the loader has left. */
-export function scrollToCatchback(immediate = false) {
+export function scrollToCatchback(immediate = false, options?: ScrollOptions) {
   const trigger = ScrollTrigger.getById("works-catchback");
   const progress = WORKS_LOCKUP_VISIBLE / WORKS_TIMELINE_DURATION;
-  scrollToTop(trigger ? trigger.start + (trigger.end - trigger.start) * progress : 0, immediate);
+  scrollToTop(
+    trigger ? trigger.start + (trigger.end - trigger.start) * progress : 0,
+    immediate,
+    options,
+  );
 }
 
 /** Scroll to the start of the vahan pin. */
