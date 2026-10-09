@@ -10,11 +10,11 @@ export function InfoResearch({ className }: { className?: string }) {
     >
       <h2
         id="info-research-title"
-        className="m-0 font-serif text-[clamp(2rem,3vw,2.6rem)] leading-[0.92] font-normal italic"
+        className="m-0 font-serif text-[clamp(1.65rem,2.45vw,2.15rem)] leading-[0.92] font-normal italic"
       >
         {INFO_RESEARCH.heading}
       </h2>
-      <ul className="m-0 mt-[1.85rem] list-none space-y-[0.95rem] p-0 font-sans text-[clamp(0.875rem,1.3vw,1.2rem)] leading-[1.4] font-normal">
+      <ul className="m-0 mt-[1.85rem] list-none space-y-[0.95rem] p-0 font-sans text-[clamp(0.75rem,1.1vw,1rem)] leading-[1.4] font-normal">
         {INFO_RESEARCH.items.map((item) => (
           <li key={item}>{item}</li>
         ))}

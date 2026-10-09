@@ -38,11 +38,11 @@ export function InfoContact({ className }: { className?: string }) {
     >
       <h2
         id="info-contact-title"
-        className="m-0 font-serif text-[clamp(1.05rem,1.55vw,1.3rem)] leading-none font-normal italic"
+        className="m-0 font-serif text-[clamp(0.9rem,1.3vw,1.1rem)] leading-none font-normal italic"
       >
         {INFO_CONTACT.heading}
       </h2>
-      <dl className="m-0 mt-[1.4rem] flex flex-col gap-[1.45rem] font-sans text-[clamp(0.76rem,0.85vw,0.85rem)] leading-[1.35] font-normal">
+      <dl className="m-0 mt-[1.4rem] flex flex-col gap-[1.45rem] font-sans text-[clamp(0.75rem,0.8vw,0.8rem)] leading-[1.35] font-normal">
         {INFO_CONTACT.items.map((item) => (
           <div key={item.label} className="flex flex-col gap-[0.3rem]">
             <dt className="m-0">{item.label}</dt>

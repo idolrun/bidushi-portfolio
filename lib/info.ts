@@ -45,7 +45,7 @@ export const INFO_CONTACT = {
     },
     {
       label: "Linkedin",
-      value: "hello@bidushi.design",
+      value: "Bidushi Thapa",
       href: "https://www.linkedin.com/in/bidushi-t-026a9758/",
     },
     {
